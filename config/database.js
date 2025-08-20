@@ -1,33 +1,35 @@
 const mysql = require('mysql2/promise');
 require('dotenv').config();
 
+// Railway provides these environment variables automatically
 const dbConfig = {
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  host: process.env.MYSQL_HOST || process.env.DB_HOST,
+  user: process.env.MYSQL_USER || process.env.DB_USER || 'root',
+  password: process.env.MYSQL_PASSWORD || process.env.DB_PASSWORD,
+  database: process.env.MYSQL_DATABASE || process.env.DB_NAME || 'railway',
+  port: process.env.MYSQL_PORT || process.env.DB_PORT || 3306,
   waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
+  connectionLimit: 5,
+  queueLimit: 0,
+  acquireTimeout: 60000,
+  timeout: 60000,
+  reconnect: true
 };
 
-// Create connection pool
+console.log('Database config:', {
+  host: dbConfig.host,
+  user: dbConfig.user,
+  database: dbConfig.database,
+  port: dbConfig.port
+});
+
 const pool = mysql.createPool(dbConfig);
 
-// Function to create database and table if they don't exist
 async function initializeDatabase() {
   try {
-    // Create database if it doesn't exist
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD
-    });
-
-    await connection.execute(`CREATE DATABASE IF NOT EXISTS ${process.env.DB_NAME}`);
-    await connection.end();
-
-    // Create schools table if it doesn't exist
+    // Skip database creation on Railway - it's already created
+    console.log('Creating schools table if not exists...');
+    
     await pool.execute(`
       CREATE TABLE IF NOT EXISTS schools (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -36,21 +38,16 @@ async function initializeDatabase() {
         latitude FLOAT NOT NULL,
         longitude FLOAT NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        INDEX idx_name (name),
-        INDEX idx_location (latitude, longitude)
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
       )
     `);
 
-    console.log('Database and table initialized successfully');
+    console.log('Database table created successfully');
   } catch (error) {
-    console.error('Error initializing database:', error);
+    console.error('Database initialization error:', error);
     throw error;
   }
 }
-
-// Test the export to make sure it works
-console.log('Database module loaded, initializeDatabase function:', typeof initializeDatabase);
 
 module.exports = {
   pool,

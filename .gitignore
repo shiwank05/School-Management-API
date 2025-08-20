@@ -1,1 +1,9 @@
 .env
+DB_HOST=mysql.railway.internal
+DB_USER=root
+DB_PASSWORD=OAqaQySFjJzoecypegIYCXzdhJkQHmoF
+DB_NAME=railway
+
+# Server Configuration
+PORT=3000
+NODE_ENV=development

@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
-const { initializeDatabase } = require('./config/database');
 const schoolRoutes = require('./routes/schoolRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
@@ -23,10 +22,16 @@ app.get('/', (req, res) => {
     success: true,
     message: 'School Management API is running',
     version: '1.0.0',
-    endpoints: {
-      addSchool: 'POST /api/addSchool',
-      listSchools: 'GET /api/listSchools?latitude={lat}&longitude={lon}'
-    }
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Simple health check
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    success: true,
+    status: 'healthy',
+    timestamp: new Date().toISOString()
   });
 });
 
@@ -41,24 +46,33 @@ app.use('*', (req, res) => {
 // Error handling middleware
 app.use(errorHandler);
 
-// Initialize database and start server
-async function startServer() {
+// Start server immediately without database initialization
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server is running on port ${PORT}`);
+  
+  // Initialize database after server starts (non-blocking)
+  initializeDatabaseAsync();
+});
+
+// Non-blocking database initialization
+async function initializeDatabaseAsync() {
   try {
+    console.log('Initializing database...');
+    const { initializeDatabase } = require('./config/database');
     await initializeDatabase();
-    
-    app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
-      console.log(`Health check: http://localhost:${PORT}`);
-      console.log(`Add School: POST http://localhost:${PORT}/api/addSchool`);
-      console.log(`List Schools: GET http://localhost:${PORT}/api/listSchools?latitude={lat}&longitude={lon}`);
-    });
+    console.log('Database initialized successfully');
   } catch (error) {
-    console.error('Failed to start server:', error);
-    process.exit(1);
+    console.error('Database initialization error:', error.message);
+    // Don't exit - let the server continue running
   }
 }
 
-startServer();
+// Handle graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received');
+  server.close(() => {
+    process.exit(0);
+  });
+});
 
-// Export for testing
 module.exports = app;
