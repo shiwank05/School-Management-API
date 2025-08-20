@@ -1,0 +1,221 @@
+{
+  "info": {
+    "name": "School Management API",
+    "description": "API for managing schools with location-based sorting",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "school-api-collection",
+    "version": "1.0.0"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/",
+          "host": ["{{baseUrl}}"],
+          "path": [""]
+        },
+        "description": "Check if API is running"
+      },
+      "response": []
+    },
+    {
+      "name": "Health Check Detailed",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["health"]
+        },
+        "description": "Detailed health check including database status"
+      },
+      "response": []
+    },
+
+
+    {
+      "name": "Add VIT Chennai",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"VIT Chennai - Vellore Institute of Technology\",\n  \"address\": \"Kelambakkam - Vandalur Rd, Chennai, Tamil Nadu 600127, India\",\n  \"latitude\": 12.8431,\n  \"longitude\": 80.1540\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/addSchool",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "addSchool"]
+        },
+        "description": "Add VIT Chennai campus"
+      },
+      "response": []
+    },
+    {
+      "name": "Add SRM Chennai",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"SRM Institute of Science and Technology\",\n  \"address\": \"SRM Nagar, Kattankulathur, Tamil Nadu 603203, India\",\n  \"latitude\": 12.8230,\n  \"longitude\": 80.0444\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/addSchool",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "addSchool"]
+        },
+        "description": "Add SRM Institute of Science and Technology, Chennai"
+      },
+      "response": []
+    },
+    {
+      "name": "Add IIT Bombay",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Indian Institute of Technology Bombay\",\n  \"address\": \"Powai, Mumbai, Maharashtra 400076, India\",\n  \"latitude\": 19.1334,\n  \"longitude\": 72.9133\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/addSchool",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "addSchool"]
+        },
+        "description": "Add IIT Bombay"
+      },
+      "response": []
+    },
+    {
+      "name": "List Schools by Proximity",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/listSchools?latitude=28.6139&longitude=77.2090",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "listSchools"],
+          "query": [
+            {
+              "key": "latitude",
+              "value": "28.6139",
+              "description": "User's latitude (New Delhi, India)"
+            },
+            {
+              "key": "longitude",
+              "value": "77.2090",
+              "description": "User's longitude (New Delhi, India)"
+            }
+          ]
+        },
+        "description": "Get all schools sorted by distance from user location in Delhi"
+      },
+      "response": []
+    },
+    {
+      "name": "List Schools - Different Location",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/listSchools?latitude=12.9716&longitude=77.5946",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "listSchools"],
+          "query": [
+            {
+              "key": "latitude",
+              "value": "12.9716",
+              "description": "Bangalore, India latitude"
+            },
+            {
+              "key": "longitude",
+              "value": "77.5946",
+              "description": "Bangalore, India longitude"
+            }
+          ]
+        },
+        "description": "Get schools sorted by distance from Bangalore, India"
+      },
+      "response": []
+    },
+    {
+      "name": "List Schools - Chennai Area",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/listSchools?latitude=13.0827&longitude=80.2707",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "listSchools"],
+          "query": [
+            {
+              "key": "latitude",
+              "value": "13.0827",
+              "description": "Chennai, Tamil Nadu latitude"
+            },
+            {
+              "key": "longitude",
+              "value": "80.2707",
+              "description": "Chennai, Tamil Nadu longitude"
+            }
+          ]
+        },
+        "description": "Get schools sorted by distance from Chennai, Tamil Nadu (useful for VIT and SRM proximity)"
+      },
+      "response": []
+    },
+    {
+      "name": "List Schools - Mumbai Area",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/listSchools?latitude=19.0760&longitude=72.8777",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "listSchools"],
+          "query": [
+            {
+              "key": "latitude",
+              "value": "19.0760",
+              "description": "Mumbai, Maharashtra latitude"
+            },
+            {
+              "key": "longitude",
+              "value": "72.8777",
+              "description": "Mumbai, Maharashtra longitude"
+            }
+          ]
+        },
+        "description": "Get schools sorted by distance from Mumbai, Maharashtra (useful for IIT Bombay proximity)"
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "description": "Base URL for local development"
+    }
+  ]
+}
