@@ -252,17 +252,3 @@ The API includes comprehensive error handling:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📝 License
-
-This project is licensed under the ISC License.
-
-## 📧 Contact
-
-- **Author**: Your Name
-- **Email**: your.email@example.com
-- **Repository**: https://github.com/yourusername/school-management-api
-
-## 🔗 Links
-
-- [Live API]([https://your-app.up.railway.app](https://school-management-api-production-28d2.up.railway.app/))
-- [Postman Collection]([./postman/School-API-Collection.json](https://shiwankkumar.postman.co/workspace/Shiwank-Kumar's-Workspace~b6925374-fbaa-4ca1-85c0-da2afd22a997/collection/44458111-bb0169cb-7e79-49ae-87dc-1b18ed51ca3a?action=share&creator=44458111))
