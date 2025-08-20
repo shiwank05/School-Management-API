@@ -1,31 +1,53 @@
-// src/config/database.js
-const mysql = require("mysql2/promise");
+const mysql = require('mysql2/promise');
+require('dotenv').config();
 
 const dbConfig = {
-  host: process.env.MYSQLHOST || process.env.DB_HOST || "localhost",
-  user: process.env.MYSQLUSER || process.env.DB_USER || "root",
-  password: process.env.MYSQLPASSWORD || process.env.DB_PASSWORD || "",
-  database: process.env.MYSQLDATABASE || process.env.DB_NAME || "test",
-  port: process.env.MYSQLPORT || process.env.DB_PORT || 3306,
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0,
-  ssl:
-    process.env.NODE_ENV === "production"
-      ? { rejectUnauthorized: false } // Railway needs this
-      : false,
+  queueLimit: 0
 };
 
+// Create connection pool
 const pool = mysql.createPool(dbConfig);
 
-pool
-  .getConnection()
-  .then((conn) => {
-    console.log("✅ Database connected successfully!");
-    conn.release();
-  })
-  .catch((err) => {
-    console.error("❌ Database connection failed:", err.message);
-  });
+// Function to create database and table if they don't exist
+async function initializeDatabase() {
+  try {
+    // Create database if it doesn't exist
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD
+    });
 
-module.exports = pool;
+    await connection.execute(`CREATE DATABASE IF NOT EXISTS ${process.env.DB_NAME}`);
+    await connection.end();
+
+    // Create schools table if it doesn't exist
+    await pool.execute(`
+      CREATE TABLE IF NOT EXISTS schools (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        address TEXT NOT NULL,
+        latitude FLOAT NOT NULL,
+        longitude FLOAT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+      )
+    `);
+
+    console.log('Database and table initialized successfully');
+  } catch (error) {
+    console.error('Error initializing database:', error);
+    throw error;
+  }
+}
+
+module.exports = {
+  pool,
+  initializeDatabase
+};
