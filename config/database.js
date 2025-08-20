@@ -36,7 +36,9 @@ async function initializeDatabase() {
         latitude FLOAT NOT NULL,
         longitude FLOAT NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        INDEX idx_name (name),
+        INDEX idx_location (latitude, longitude)
       )
     `);
 
@@ -46,6 +48,9 @@ async function initializeDatabase() {
     throw error;
   }
 }
+
+// Test the export to make sure it works
+console.log('Database module loaded, initializeDatabase function:', typeof initializeDatabase);
 
 module.exports = {
   pool,
